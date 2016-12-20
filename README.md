@@ -1,4 +1,5 @@
 Our temp component's config is config-file.json.
+
 Every node we have to put in \_tree.
 Nodes's properties: {
   type: String //component dom element,
