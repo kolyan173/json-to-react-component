@@ -1,0 +1,38 @@
+{
+  "components": {
+    "_tree": {
+      "type": "div",
+      "props": {
+      },
+      "children": [{
+        "type": "MainNavigation"
+      }]
+    },
+    "customComponents": [
+      {
+        "name": "Button",
+        "type": "button",
+        "props": {
+          "className": "btn"
+        }
+      },
+      {
+        "name": "MainNavigation",
+        "type": "nav",
+        "props": {
+        },
+        "children": {
+          "type": "div",
+          "props": {
+            "children": {
+              "type": "Button",
+              "props": {
+              },
+              "children": "Test task"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

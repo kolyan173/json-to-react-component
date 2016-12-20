@@ -1,0 +1,24 @@
+{
+  "components": {
+    "_tree": {
+      "type": "div",
+      "props": {
+      },
+      "children": [{
+        "type": "nav",
+        "children": {
+          "type": "div",
+          "props": {
+          },
+          "children": {
+            "type": "button",
+            "props": {
+              "className": "btn"
+            },
+            "children": "Test task"
+          }
+        }
+      }]
+    }
+  }
+}
