@@ -5,53 +5,35 @@ import _ from 'lodash';
 
 let mainComponents = {};
 
-const modifyComponentName = (obj) => {
-  const newObj = Object.assign({}, obj);
+const createElementRecursive = (json) => {
+  const createElementProxy = (component, index) => {
+    let props = component.props;
 
-  function walker(obj) {
-    let k;
-    const has = Object.prototype.hasOwnProperty.bind(obj);
-    for (k in obj) if (has(k)) {
-      switch (typeof obj[k]) {
-        case 'object':
-          walker(obj[k]);
-          break;
-        case 'string':
-          if (k === 'type'){
-            if (obj[k].match(/^[A-Z]/)) {
-              obj[k] = mainComponents[obj[k]];
-            }
-          }
-      }
+    if (index !== undefined) {
+      props = component.props ?  Object.assign( {key: index}, component.props) : {key: index};
     }
+
+    if (component.type.match(/^[A-Z]/)) {
+      if (component.children) {
+        return React.cloneElement(mainComponents[component.type], props, findOwnChildren(component.children));
+      }
+
+      return React.cloneElement(mainComponents[component.type], props);
+    }
+
+    return React.createElement(component.type, props, findOwnChildren(component.children))
   }
 
-  walker(newObj);
-
-  return newObj;
-}
-
-const createElementRecursive = (json) => {
   function findOwnChildren(component) {
-    debugger;
     if (!component) { return null; }
 
     if (_.isArray(component)) {
-      return component.map((item, index) => {
-        const props = item.props ?  Object.assign( {key: index}, item.props) : {key: index};
-
-        return React.createElement(item.type, props, findOwnChildren(item.children))
-      })
+      return component.map((item, index) => createElementProxy(item, index))
     }
 
     if (component.type) {
       if (_.isPlainObject(component)) {
-        // if (component.type.match(/^[A-Z]/)) {
-        //   debugger;
-        //   // const customComponent = mainComponents[item.type];
-        //   // return React.createElement(item.type, props, findOwnChildren(item.children))
-        // }
-        return React.createElement(component.type, component.props, findOwnChildren(component.children))
+        return createElementProxy(component);
       }
     } else {
       return component;
@@ -63,20 +45,15 @@ const createElementRecursive = (json) => {
 
 const componentDeclaration = (customComponents) => {
   customComponents.forEach((item) => {
-    window[item.name.toLowerCase()] = createElementRecursive(item);
+    mainComponents[item.name] = React.createElement(item.type, item.props, createElementRecursive(item.children));
   });
 }
 
 $.getJSON('/config-file')
   .done((json) => {
     const { components } = json;
-    // componentDeclaration(components.customComponents);
-    // mainComponents = modifyComponentName(json.components.customComponents);
 
-    // debugger;
-    const parsedComponents = createElementRecursive(components._tree);
-    // const tree = parsedComponents.components._tree;
-    ReactDOM.render(parsedComponents, document.getElementById('root'));
-    // ReactDOM.render({type: 'div', props: {children: React.createElement('div', null, 'Ok')}}, document.getElementById('root'));
+    componentDeclaration(components.customComponents);
 
+    ReactDOM.render(createElementRecursive(components._tree), document.getElementById('root'));
   });

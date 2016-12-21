@@ -4,13 +4,13 @@ var express = require('express');
 var config = require('./webpack.config');
 var bodyParser = require("body-parser");
 var multer = require('multer');
-var configFile = require('./config-file-temp.json');
+var configFile = require('./config-file.json');
 var app = express();
 app.use(bodyParser.json());
 var compiler = webpack(config);
 
 var storage = multer.memoryStorage();
-var upload = multer({ storage : storage}).single('config-file-temp');
+var upload = multer({ storage : storage}).single('config-file');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', function(req, res) {

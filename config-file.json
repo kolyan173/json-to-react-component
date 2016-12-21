@@ -23,13 +23,9 @@
         },
         "children": {
           "type": "div",
-          "props": {
-            "children": {
-              "type": "Button",
-              "props": {
-              },
-              "children": "Test task"
-            }
+          "children": {
+            "type": "Button",
+            "children": "Test task"
           }
         }
       }
